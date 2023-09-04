@@ -9,16 +9,17 @@
     <div id="app">
       <h1>S3 Uploader Test</h1>
   
-      <div v-if="!image">
-        <h2>Select an image</h2>
-        <input type="file" @change="onFileChange" accept="image/jpeg">
+      <div v-if="!filename">
+        <h2>Select a File</h2>
+        <input type="file" @change="onFileChange" accept="*">
       </div>
       <div v-else>
-        <img :src="image" />
-        <button v-if="!uploadURL" @click="removeImage">Remove image</button>
-        <button v-if="!uploadURL" @click="uploadImage">Upload image</button>
+        <p>Selected File: {{ filename }}</p> <!-- Display the selected file name -->
+        <p>Type: {{ filetype }}</p> <!-- Display the type -->
+        <button v-if="!uploadURL" @click="removeImage">Remove file</button>
+        <button v-if="!uploadURL" @click="uploadImage">Upload file</button>
       </div>
-      <h2 v-if="uploadURL">Success! Image uploaded to bucket.</h2>
+      <h2 v-if="uploadURL">Success! File uploaded to bucket.</h2>
     </div>
   
     <script>
@@ -31,6 +32,8 @@
       new Vue({
         el: "#app",
         data: {
+          filename:'',
+          filetype:'',
           image: '',
           uploadURL: ''
         },
@@ -44,13 +47,15 @@
             // var image = new Image()
             let reader = new FileReader()
             reader.onload = (e) => {
-              console.log('length: ', e.target.result.includes('data:image/jpeg'))
-              if (!e.target.result.includes('data:image/jpeg')) {
-                return alert('Wrong file type - JPG only.')
+              console.log('length: ', e.target.result.length)
+              // if (!e.target.result.includes('data:image/jpeg')) {
+              //   return alert('Wrong file type - JPG only.')
+              // }
+              if (e.target.result.length > MAX_FILE_SIZE) {
+                return alert('File is loo large.')
               }
-              if (e.target.result.length > MAX_IMAGE_SIZE) {
-                return alert('Image is loo large.')
-              }
+              this.filename = file.name
+              this.filetype = file.type
               this.image = e.target.result
             }
             reader.readAsDataURL(file)
@@ -58,14 +63,28 @@
           removeImage: function (e) {
             console.log('Remove clicked')
             this.image = ''
+            this.filename = ''
+            this.filetype = ''
           },
           uploadImage: async function (e) {
             console.log('Upload clicked')
             // Get the presigned URL
             const response = await axios({
               method: 'GET',
-              url: API_ENDPOINT
+              url: API_ENDPOINT,
+              params: {
+                fileName: this.filename,
+                fileType: this.fileType
+              }
             })
+            // const response = await axios({
+            //   method: 'GET',
+            //   url: API_ENDPOINT,
+            //   body: {
+            //     fileName: 'test.jpg',
+            //     fileType: 'image/jpeg'
+            //   }
+            // })
             console.log('Response: ', response)
             console.log('Uploading: ', this.image)
             let binary = atob(this.image.split(',')[1])
@@ -73,7 +92,7 @@
             for (var i = 0; i < binary.length; i++) {
               array.push(binary.charCodeAt(i))
             }
-            let blobData = new Blob([new Uint8Array(array)], {type: 'image/jpeg'})
+            let blobData = new Blob([new Uint8Array(array)], {type: this.filetype})
             console.log('Uploading to: ', response.uploadURL)
             const result = await fetch(response.uploadURL, {
               method: 'PUT',
