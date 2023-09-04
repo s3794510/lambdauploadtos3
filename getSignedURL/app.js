@@ -22,6 +22,13 @@ const s3 = new AWS.S3()
 // Change this value to adjust the signed URL's expiration
 const URL_EXPIRATION_SECONDS = 300
 
+const header = {
+    'headers': {
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+    }
+}
 // Main Lambda entry point
 exports.handler = async (event) => {
   return await getUploadURL(event)
