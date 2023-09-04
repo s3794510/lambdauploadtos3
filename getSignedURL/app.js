@@ -53,7 +53,10 @@ const getUploadURL = async function(event) {
 
   console.log('Params: ', s3Params)
   const uploadURL = await s3.getSignedUrlPromise('putObject', s3Params)
-
+  
+  // DEBUG
+  //return Key
+  
   return JSON.stringify({
     uploadURL: uploadURL,
     Key
