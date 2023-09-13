@@ -32,10 +32,9 @@
       new Vue({
         el: "#app",
         data: {
-          userid: '001',
+          usertoken: '001',
           filename:'',
           filetype:'',
-          image: '',
           uploadURL: ''
         },
         methods: {
@@ -74,21 +73,14 @@
               method: 'GET',
               url: API_ENDPOINT,
               params: {
-                userId: this.userid,
+                userId: this.usertoken,
                 fileName: this.filename,
                 fileType: this.filetype
               }
             })
-            // const response = await axios({
-            //   method: 'GET',
-            //   url: API_ENDPOINT,
-            //   body: {
-            //     fileName: 'test.jpg',
-            //     fileType: 'image/jpeg'
-            //   }
-            // })
+
             console.log('Response: ', response)
-            console.log('Uploading: ', this.image)
+            //console.log('Uploading: ', this.image)
             let binary = atob(this.image.split(',')[1])
             let array = []
             for (var i = 0; i < binary.length; i++) {
