@@ -11,7 +11,7 @@
   
       <div v-if="!filename">
         <h2>Select a File</h2>
-        <input type="file" @change="onFileChange" accept="*">
+        <input type="file" @change="onFileChange" accept=".zip">
       </div>
       <div v-else>
         <p>Selected File: {{ filename }}</p> <!-- Display the selected file name -->
@@ -28,7 +28,7 @@
       /* ENTER YOUR ENDPOINT HERE */
 
       const API_ENDPOINT = 'https://ohbrp8w717.execute-api.us-east-1.amazonaws.com/uploads' // e.g. https://ab1234ab123.execute-api.us-east-1.amazonaws.com/uploads
-	    const token = "eyJraWQiOiJzeTRFa2NTUUNYbDNTeVFENTU2V1RnbCt5cUdOcE5CakZHVW9VTCtYd0VnPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI1NDk4ZTQ2OC02MDYxLTcwZDAtZDQyMy1lOTY5Y2ZmZTFmMzkiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX0pPaEY2bXpLcyIsImNvZ25pdG86dXNlcm5hbWUiOiJkYW5pZWwyIiwib3JpZ2luX2p0aSI6ImQ3NGM1OGZhLTRjYjMtNDYxZC1iNzFkLTI0YmIzOGIwMjQ1MSIsImF1ZCI6IjFldG9hN2IyNXA3NGE5NXU3ODBtZDk2OHYyIiwiZXZlbnRfaWQiOiIwOWFiMzM1Mi1lNTgyLTQ2NDQtYjY2Yi0zNjE4YmVjODI2OGUiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY5NDc3MzUwMSwiZXhwIjoxNjk0Nzc3MTAxLCJpYXQiOjE2OTQ3NzM1MDEsImp0aSI6ImUzYjJhNGQ4LWU5OTUtNDUzZi1hMDQxLTYzZDMxNjI4ODE4YiIsImVtYWlsIjoia2hhbmduZ3V5ZW5kdWMwMTA0QGdtYWlsLmNvbSJ9.kc1KF-akFyTaPTMqLk7noyMszFQp4semUzE46m15sPTiUGZzuqraBxZSOfpBJYsGZ9fB8kXZD3aeFSmHRrsuOOiA-GCwB-4BbP9cIbiU18EVi3b2RCoARj9DwHG30Q3QsMl_1z7wDW5iRC1O43nDTpMn1uag8kfw4Ld27KOJZQE61DXnb_SF9nSLzcFbuD5v_uxDiqM_pFBGk-K5cyjuApM832CiZptIfy1eGDl6KpjdTraFhbmDVe0serL46Xt6GBQo6EICb1e2Fn15LyqkmiQVpiE03Y9mwdolYeZGPrmwLtkZhbFNt2UwGuaEaO7XFEMUGQxNK5PO174kYc_QmA"
+	    const token = "eyJraWQiOiJzeTRFa2NTUUNYbDNTeVFENTU2V1RnbCt5cUdOcE5CakZHVW9VTCtYd0VnPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI1NDk4ZTQ2OC02MDYxLTcwZDAtZDQyMy1lOTY5Y2ZmZTFmMzkiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX0pPaEY2bXpLcyIsImNvZ25pdG86dXNlcm5hbWUiOiJkYW5pZWwyIiwib3JpZ2luX2p0aSI6ImQ4OGM0ZmIzLTg5MTMtNDMyNy1hNjhlLWE2MjYyNTc5YmExYyIsImF1ZCI6IjFldG9hN2IyNXA3NGE5NXU3ODBtZDk2OHYyIiwiZXZlbnRfaWQiOiIzYTJmZDliNi0zNWIxLTQwYjgtOGZkYi1jNDcxODhmNDcwZjEiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY5NDkwNzQ3NywiZXhwIjoxNjk0OTExMDc3LCJpYXQiOjE2OTQ5MDc0NzcsImp0aSI6ImY3NGM5ODViLWNlMmEtNDllZC05OTUwLWYwYmY0NDM3N2I0NyIsImVtYWlsIjoia2hhbmduZ3V5ZW5kdWMwMTA0QGdtYWlsLmNvbSJ9.qgkMPAu-PcPuK0hNwmqsmKK92xp8y3uAb1_TCL8Hunf3B63vkHW2LnMs3SNBkZWuLAIkUbqmx7mYXW0zGI_X4CSCiDOyUWjzzFAwpnjZvMy8Ns5xw4OtXFTUJEzeedmaG-h55PRH5pGAj4X4ofdsQJcP477uRHO6CKDrwN6L-ukOSm5FktQEENqCN-GbekmFsISCzOayxWc96BtS7YoJTtkT7WGb9V2kD2EC2QBOzeng8Hzl9abnmO5oW-EL7ifOVangUh2Z-DWy8IuFvGg8YO58eSj2TSNr_0zeEu4eJGXZCY-WEjJ3fXD5dsWCtkxefypdCwmMl9srp9v1opULiQ"
       new Vue({
         el: "#app",
         data: {
@@ -93,9 +93,30 @@
               body: blobData
             })
             console.log('Result: ', result)
-            console.log('Status: ', result.status)
+            
+            
             // Final URL for the user doesn't need the query string params
-            this.uploadURL = response.uploadURL.split('?')[0]
+            //this.uploadURL = response.uploadURL.split('?')[0]
+            
+            if (result.status === 200) {
+              console.log('Finallzing uplaoding...')
+              const NEW_API_ENDPOINT = response.Proceed;  // Replace with your actual endpoint
+              try {
+                // Invoke file transfering to CodeCommit
+                const newApiResponse = await axios({
+                  method: 'GET',
+                  url: NEW_API_ENDPOINT,
+                  params: {
+                    Key: response.Key,  // Assuming the Key is returned in the initial API response
+                    userToken: token,
+                    Repository:'test'
+                  }
+                });
+                console.log('Uploading Process Successful with the response:', newApiResponse);
+              } catch (error) {
+                console.error('Error fetching from the new API:', error);
+              }
+            }
           }
         }
       })
