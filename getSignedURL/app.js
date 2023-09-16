@@ -100,5 +100,6 @@ const getUploadURL = async function(event) {
     uploadURL: uploadURL,
     Key,
     ContentType: contenttype,
+    Proceed: process.env.PROCEED_API
   });
 }
