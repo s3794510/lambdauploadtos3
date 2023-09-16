@@ -16,11 +16,14 @@
 'use strict'
 
 const AWS = require('aws-sdk')
+const https = require('https');
 AWS.config.update({ region: process.env.AWS_REGION })
 const s3 = new AWS.S3()
 
 // Change this value to adjust the signed URL's expiration
 const URL_EXPIRATION_SECONDS = 300
+
+const AUTHORIZER_ENDPOINT_URL = process.env.AUTHORIZER_ENDPOINT_URL; // Fetching from environment variable
 
 const header = {
     'headers': {
@@ -35,9 +38,46 @@ exports.handler = async (event) => {
   return res
 }
 
+const fetchUserId = async (token) => {
+    return new Promise((resolve, reject) => {
+        const options = {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        };
+
+        const req = https.get(AUTHORIZER_ENDPOINT_URL, options, (res) => {
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+            res.on('end', () => {
+                resolve({
+                    statusCode: res.statusCode,
+                    body: data
+                });
+            });
+        });
+
+        req.on('error', (error) => {
+            reject(error);
+        });
+    });
+};
+
 const getUploadURL = async function(event) {
+  const token = event['queryStringParameters']['userToken']
+  const fetchUserId_res = await fetchUserId(token);
+  // Check the status code from fetchUserId_res
+  if (fetchUserId_res.statusCode !== 200) {
+    return fetchUserId_res;
+  }
+  //const id = JSON.parse(fetchUserId_res.body).userId;
+  const sub = JSON.parse(fetchUserId_res.body).sub
+  const Key = sub + '/' + event['queryStringParameters']['fileName']
+  
   const randomID = parseInt(Math.random() * 10000000)
-  const Key = event['queryStringParameters']['userId'] + '/' + event['queryStringParameters']['fileName']
   const contenttype = event['queryStringParameters']['fileType']
   
   // Get signed URL from S3
@@ -51,15 +91,14 @@ const getUploadURL = async function(event) {
     // the extra permission for the Lambda function in the SAM template.
 
     // ACL: 'public-read'
-  }
+  };
 
-  console.log('Params: ', s3Params)
-  const uploadURL = await s3.getSignedUrlPromise('putObject', s3Params)
-  
+  console.log('Params: ', s3Params);
+  const uploadURL = await s3.getSignedUrlPromise('putObject', s3Params);
   
   return JSON.stringify({
     uploadURL: uploadURL,
     Key,
-    ContentType: contenttype
-  })
+    ContentType: contenttype,
+  });
 }
