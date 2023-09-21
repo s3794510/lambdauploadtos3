@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List Repos</title>
+    <script>
+        // Function to fetch data from API and populate it in the HTML
+        async function fetchData() {
+            const userToken = "eyJraWQiOiJzeTRFa2NTUUNYbDNTeVFENTU2V1RnbCt5cUdOcE5CakZHVW9VTCtYd0VnPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI1NDk4ZTQ2OC02MDYxLTcwZDAtZDQyMy1lOTY5Y2ZmZTFmMzkiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX0pPaEY2bXpLcyIsImNvZ25pdG86dXNlcm5hbWUiOiJkYW5pZWwyIiwib3JpZ2luX2p0aSI6IjA3NmI1MGY2LTJiMGQtNGMwMC04NjdjLWNkZDhkNWNiYjMzYyIsImF1ZCI6IjFldG9hN2IyNXA3NGE5NXU3ODBtZDk2OHYyIiwiZXZlbnRfaWQiOiIxMjk5ZGMwMi03OWZlLTRkNDMtOTYyMC04YjhiMWU2ZTlhZTgiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY5NTI3NTEwNCwiZXhwIjoxNjk1Mjc4NzA0LCJpYXQiOjE2OTUyNzUxMDQsImp0aSI6ImU3MGZhMzQ1LTA4YTktNDhiMy05YjI4LTI3YjA5Nzg5Y2Y2ZSIsImVtYWlsIjoia2hhbmduZ3V5ZW5kdWMwMTA0QGdtYWlsLmNvbSJ9.DYuEZWPvGR1WOqK2_4_6dyrZKBVjv04UJf7aaJm4ePKpZlHxYWiwFex18fd0V4hXA44hiCFgmf0kNZOjDGG1Gz6gogQRO0Vg4l6Z7zd_UV4Tshkfdb1LHJ-uUpmJulVcPpBCvqsEE5OjTY_bp54mmn8rUTS2I4wfVuIgRujsUuu79lLRzU5n-Dj2P48HTjs8_tWJ7v94eafLw5k4iQOmnpprxSSGNJbfVt9HcCw7CTt7EK3pP4mkRvAgSET9L9HU4aSL67mZTI5Pqus7StQ_BG9lN94v0Rq1ND6sWMxm1unSHeugGNyOTwF4_uQG_1MUX5B03kb7N6a-R7lWAKJOwg"
+            
+            try {
+                const response = await fetch(`https://la9zcrbe3a.execute-api.us-east-1.amazonaws.com/ListRepo?userToken=${userToken}`);
+                if (response.status !== 200) {
+                    document.getElementById("error").textContent = "Error fetching data.";
+                    return;
+                }
+                const data = await response.json();
+                console.log(data);
+                populateData(data);
+            } catch (error) {
+                document.getElementById("error").textContent = "An error occurred.";
+            }
+        }
+
+        // Function to populate data in HTML
+        function populateData(data) {
+            const listElement = document.getElementById("repoList");
+            data.forEach((repo) => {
+                const listItem = document.createElement("li");
+                listItem.textContent = repo;
+                listElement.appendChild(listItem);
+            });
+        }
+
+        // Fetch data when the window loads
+        window.addEventListener("load", fetchData);
+    </script>
+</head>
+<body>
+
+    <h1>Repo List</h1>
+
+    <div id="error"></div>
+
+    <ul id="repoList">
+        <!-- List items will be populated here -->
+    </ul>
+
+</body>
+</html>
